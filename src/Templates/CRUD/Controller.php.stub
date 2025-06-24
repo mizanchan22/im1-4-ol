@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Models\{{modelName}}Model;
+
+class {{modelName}} extends BaseController
+{
+    protected $model;
+
+    public function __construct()
+    {
+        $this->model = new {{modelName}}Model();
+    }
+
+    public function index()
+    {
+        $data['items'] = $this->model->findAll();
+        return view('{{viewFolder}}/index', $data);
+    }
+
+    public function create()
+    {
+        return view('{{viewFolder}}/create');
+    }
+
+    public function store()
+    {
+        $this->model->save($this->request->getPost());
+        return redirect()->to('/{{viewFolder}}');
+    }
+
+    public function edit($id)
+    {
+        $data['item'] = $this->model->find($id);
+        return view('{{viewFolder}}/edit', $data);
+    }
+
+    public function update($id)
+    {
+        $this->model->update($id, $this->request->getPost());
+        return redirect()->to('/{{viewFolder}}');
+    }
+
+    public function delete($id)
+    {
+        $this->model->delete($id);
+        return redirect()->to('/{{viewFolder}}');
+    }
+}

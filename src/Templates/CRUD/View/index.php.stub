@@ -1,0 +1,21 @@
+<h2>{{modelName}} List</h2>
+
+<a href="/{{viewFolder}}/create">Create New</a>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    <?php foreach ($items as $item): ?>
+    <tr>
+        <td><?= $item['id'] ?></td>
+        <td><?= $item['name'] ?></td>
+        <td>
+            <a href="/{{viewFolder}}/edit/<?= $item['id'] ?>">Edit</a>
+            <a href="/{{viewFolder}}/delete/<?= $item['id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>

@@ -188,8 +188,86 @@ return $dir;
 
 private function genCRUD()
 {
-echo "🎨 Genrating CRUD...\n";
+echo "🎨 Generating CRUD...\n";
+echo "\n👨‍💻 Nak buat CRUD untuk model apa? (Contoh: Product): ";
+$handle = trim(fgets(STDIN));
+
+$modelName = ucfirst($handle); // Example: Product
+$viewFolder = strtolower($handle); // example: product
+
+echo "📦 Generating CRUD for: $modelName\n";
+
+$projectRoot = $this->getProjectRoot();
+
+$paths = [
+'controller' => $projectRoot . "/app/Controllers/{$modelName}.php",
+'model' => $projectRoot . "/app/Models/{$modelName}Model.php",
+'views' => $projectRoot . "/app/Views/{$viewFolder}",
+'route' => $projectRoot . "/app/Config/Routes.php",
+];
+
+// Ensure view folder exists
+if (!is_dir($paths['views'])) {
+mkdir($paths['views'], 0777, true);
 }
+
+// Copy stub templates and replace tokens
+$this->copyAndReplaceStub('CRUD/Controller.php.stub', $paths['controller'], [
+'{{modelName}}' => $modelName,
+'{{viewFolder}}' => $viewFolder,
+]);
+
+$this->copyAndReplaceStub('CRUD/Model.php.stub', $paths['model'], [
+'{{modelName}}' => $modelName,
+'{{viewFolder}}' => $viewFolder,
+]);
+
+foreach (['index', 'create', 'edit'] as $view) {
+$this->copyAndReplaceStub("CRUD/View/{$view}.php.stub", $paths['views'] . "/{$view}.php", [
+'{{modelName}}' => $modelName,
+'{{viewFolder}}' => $viewFolder,
+]);
+}
+
+// Add route
+$this->addRouteEntry($modelName);
+
+echo "✅ CRUD generated: Controller, Model, Views, Route\n";
+}
+
+private function copyAndReplaceStub(string $stubPath, string $targetPath, array $replacements)
+{
+$source = __DIR__ . '/Templates/' . $stubPath;
+if (!file_exists($source)) {
+echo "❌ Stub not found: $source\n";
+return;
+}
+
+$content = file_get_contents($source);
+
+foreach ($replacements as $key => $val) {
+$content = str_replace($key, $val, $content);
+}
+
+file_put_contents($targetPath, $content);
+echo "📝 Created: $targetPath\n";
+}
+
+private function addRouteEntry(string $controller)
+{
+$routesPath = $this->getProjectRoot() . '/app/Config/Routes.php';
+
+$entry = "\n// Auto generated CRUD route\n\$routes->resource('$controller');\n";
+
+if (file_exists($routesPath) && strpos(file_get_contents($routesPath), "\$routes->resource('$controller')") === false) {
+file_put_contents($routesPath, $entry, FILE_APPEND);
+echo "🛣️ Route added to Routes.php\n";
+} else {
+echo "⚠️ Route for $controller already exists or file not found.\n";
+}
+}
+
+
 
 private function genComponent()
 {
