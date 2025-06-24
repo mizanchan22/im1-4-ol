@@ -1,0 +1,25 @@
+{
+    "name": "mizanchan22/im1-4-ol",
+    "description": "R&D IM1 - mizan",
+    "type": "project",
+    "require": {
+        "nunomaduro/termwind": "^2.3",
+        "symfony/console": "^7.3",
+        "php": "^8.2"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mizanchan22\\Im14Ol\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "hamizannorwan",
+            "email": "110874395+mizanchan22@users.noreply.github.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "bin": ["bin/im1-4-ol"]
+
+}
