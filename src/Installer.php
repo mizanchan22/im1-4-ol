@@ -38,7 +38,7 @@ class Installer
     // contoh nak auto install projek
     // echo "✅ Generating Template...\n";
     // system("composer create-project codeigniter4/appstarter my-ci4-app");
-   private function genTemplate()
+private function genTemplate()
 {
     echo "\nPilih template:\n";
     echo "[1] AdminLTE\n";
@@ -61,8 +61,8 @@ class Installer
     $selected = $themes[$template];
     echo "✅ Anda pilih: $selected\n";
 
+    $projectRoot = $this->getProjectRoot(); // Guna yang stabil
     $basePath = __DIR__ . '/Templates/' . $selected;
-    $projectRoot = realpath(__DIR__ . '/../../../../../');
     $viewTarget  = $projectRoot . '/app/Views/themes/' . $selected;
     $assetTarget = $projectRoot . '/public/assets/themes/' . $selected;
 
@@ -94,19 +94,29 @@ echo "📝 Created: themes/$selected/layout/$file\n";
 }
 
 echo "✅ Empty layout structure generated.\n";
-return;
 }
 
-// Copy if Templates exist
+// ✅ Pastikan ni sentiasa jalan (walau template folder dah ada)
+if (is_dir($basePath . '/Views')) {
 $this->copyFolder($basePath . '/Views', $viewTarget);
+} else {
+echo "❗ Sumber tak wujud: $basePath/Views\n";
+}
+
+if (is_dir($basePath . '/Assets')) {
 $this->copyFolder($basePath . '/Assets', $assetTarget);
+} else {
+echo "❗ Sumber tak wujud: $basePath/Assets\n";
+}
 
 echo "🎉 Siap! Template $selected dipasang.\n";
 echo "📁 Views: app/Views/themes/$selected\n";
 echo "🖼️ Assets: public/assets/themes/$selected\n";
-$this->updateEnvTheme($selected);
 
+echo "📁 Detected CI4 Project Root: $projectRoot\n";
+$this->updateEnvTheme($selected);
 }
+
 
 private function copyFolder($src, $dst)
 {
