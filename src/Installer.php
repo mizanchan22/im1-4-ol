@@ -2,6 +2,14 @@
 
 namespace Mizanchan22\Im14Ol;
 
+foreach ($lines as &$line) {
+    if (str_starts_with(trim($line), 'CI_THEME=')) {
+        $line = "CI_THEME=$theme\n";
+        $updated = true;
+        break;
+    }
+}
+
 class Installer
 {
     public function run()
@@ -35,49 +43,173 @@ class Installer
         };
     }
 
-    private function genTemplate()
-    {
-        echo "✅ Generating Template...\n";
-        // system("composer create-project codeigniter4/appstarter my-ci4-app");
+    // contoh nak auto install projek
+    // echo "✅ Generating Template...\n";
+    // system("composer create-project codeigniter4/appstarter my-ci4-app");
+   private function genTemplate()
+{
+    echo "\nPilih template:\n";
+    echo "[1] AdminLTE\n";
+    echo "[2] SBAdmin\n";
+    echo "[3] NiceAdmin\n";
+    echo "Pilihan anda: ";
+
+    $template = trim(fgets(STDIN));
+    $themes = [
+        '1' => 'AdminLTE',
+        '2' => 'SBAdmin',
+        '3' => 'NiceAdmin',
+    ];
+
+    if (!array_key_exists($template, $themes)) {
+        echo "❌ Pilihan tidak sah.\n";
+        return;
     }
 
-    private function genCRUD()
-    {
-        echo "🎨 Genrating CRUD...\n";
-    }
+    $selected = $themes[$template];
+    echo "✅ Anda pilih: $selected\n";
 
-    private function genComponent()
-    {
-        echo "🎨 Generating Component...\n";
-    }
+    $basePath = __DIR__ . '/Templates/' . $selected;
+    $projectRoot = realpath(__DIR__ . '/../../../../../');
+    $viewTarget  = $projectRoot . '/app/Views/themes/' . $selected;
+    $assetTarget = $projectRoot . '/public/assets/themes/' . $selected;
 
-    private function installShield()
-    {
-        echo "🛡️ Installing Shield...\n";
-    }
+    if (!is_dir($basePath)) {
+        echo "📂 Template $selected belum ada. Auto generate kosong + layout...\n";
 
-    private function showTutorial()
-    {
-        echo "📖 Showing Tutorial...\n";
-    }
+        // Auto create folder layout
+        $layoutPath = $viewTarget . '/layout';
+        @mkdir($layoutPath, 0777, true);
 
-    private function genLogin()
-    {
-        echo "🔑 Generating Login...\n";
-    }
+        // Layout file names
+        $layoutFiles = [
+            'top_layout.php' => "<!-- Top Layout -->\n<!DOCTYPE html>\n<html>\n<head>\n\t<title><?= \$title ?? 'Dashboard' ?>
+</title>\n</head>\n<body>\n",
+    'main_layout.php' => "
+    <!-- Main Layout -->\n<?= \$this->renderSection('content') ?>\n",
+    'bottom_layout.php' => "
+    <!-- Bottom Layout -->\n
+</body>\n</html>",
+'sidebar_layout.php' => "
+<!-- Sidebar Layout -->\n<div class=\"sidebar\">Sidebar content here</div>",
+'login_layout.php' => "
+<!-- Login Layout -->\n<h2>Login Page</h2>\n<?= \$this->renderSection('content') ?>\n",
+];
 
-    private function genSurat()
-    {
-        echo "📝 Generating Surat...\n";
-    }
+foreach ($layoutFiles as $file => $content) {
+file_put_contents($layoutPath . '/' . $file, $content);
+echo "📝 Created: themes/$selected/layout/$file\n";
+}
 
-    private function genAliranKerja()
-    {
-        echo "📝 Generating Aliran Kerja...\n";
-    }
+echo "✅ Empty layout structure generated.\n";
+return;
+}
 
-    private function genLanguage()
-    {
-        echo "📝 Generating Language...\n";
-    }
+// Copy if Templates exist
+$this->copyFolder($basePath . '/Views', $viewTarget);
+$this->copyFolder($basePath . '/Assets', $assetTarget);
+
+echo "🎉 Siap! Template $selected dipasang.\n";
+echo "📁 Views: app/Views/themes/$selected\n";
+echo "🖼️ Assets: public/assets/themes/$selected\n";
+$this->updateEnvTheme($selected);
+
+}
+
+private function copyFolder($src, $dst)
+{
+if (!is_dir($src)) {
+echo "❗ Sumber tak wujud: $src\n";
+return;
+}
+
+@mkdir($dst, 0777, true);
+$dir = opendir($src);
+while (false !== ($file = readdir($dir))) {
+if ($file != '.' && $file != '..') {
+$srcPath = $src . '/' . $file;
+$dstPath = $dst . '/' . $file;
+
+if (is_dir($srcPath)) {
+$this->copyFolder($srcPath, $dstPath);
+} else {
+copy($srcPath, $dstPath);
+echo "📄 Copied: " . str_replace(realpath(__DIR__ . '/../../../../../'), '', $dstPath) . "\n";
+}
+}
+}
+closedir($dir);
+}
+
+private function updateEnvTheme($theme)
+{
+$projectRoot = realpath(__DIR__ . '/../../../../../');
+$envPath = $projectRoot . '/.env';
+
+if (!file_exists($envPath)) {
+echo "❌ .env file not found!\n";
+return;
+}
+
+$lines = file($envPath);
+$updated = false;
+
+foreach ($lines as &$line) {
+if (str_starts_with(trim($line), 'CI_THEME=')) {
+$line = "CI_THEME=$theme\n";
+$updated = true;
+break;
+}
+}
+
+if (!$updated) {
+// If not found, add it at the end
+$lines[] = "\nCI_THEME=$theme\n";
+}
+
+file_put_contents($envPath, implode('', $lines));
+echo "🔧 CI_THEME updated in .env: $theme\n";
+}
+
+
+
+private function genCRUD()
+{
+echo "🎨 Genrating CRUD...\n";
+}
+
+private function genComponent()
+{
+echo "🎨 Generating Component...\n";
+}
+
+private function installShield()
+{
+echo "🛡️ Installing Shield...\n";
+}
+
+private function showTutorial()
+{
+echo "📖 Showing Tutorial...\n";
+}
+
+private function genLogin()
+{
+echo "🔑 Generating Login...\n";
+}
+
+private function genSurat()
+{
+echo "📝 Generating Surat...\n";
+}
+
+private function genAliranKerja()
+{
+echo "📝 Generating Aliran Kerja...\n";
+}
+
+private function genLanguage()
+{
+echo "📝 Generating Language...\n";
+}
 }
