@@ -6,7 +6,8 @@ class InstallHook
 {
     public static function run()
     {
-        file_put_contents(getcwd() . '/test-hook.txt', 'run ok'); // ✅ DEBUG LINE
+        $basePath = dirname(__DIR__, 3); // Your CI4 project root
+        file_put_contents($basePath . '/install-hook-debug.log', 'HOOK EXECUTED at ' . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
 
         $basePath = getcwd();
 
