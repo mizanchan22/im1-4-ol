@@ -1,7 +1,7 @@
 {
     "name": "mizanchan22/im1-4-ol",
     "description": "R&D IM1 - mizan",
-    "type": "project",
+    "type": "library",
     "require": {
         "nunomaduro/termwind": "^2.3",
         "symfony/console": "^7.3",
