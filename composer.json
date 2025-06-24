@@ -24,7 +24,10 @@
       "scripts": {
         "post-autoload-dump": [
             "@php bin/im1-4-ol"
-        ]
+        ],
+         "post-install-cmd": [
+            "Mizanchan22\\Im14Ol\\Hooks\\InstallHook::run"
+  ]
     },
     "bin": ["bin/im1-4-ol"]
 
