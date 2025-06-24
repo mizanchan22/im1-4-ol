@@ -19,7 +19,8 @@
             "email": "110874395+mizanchan22@users.noreply.github.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+      "prefer-stable": true,
     "bin": ["bin/im1-4-ol"]
 
 }
