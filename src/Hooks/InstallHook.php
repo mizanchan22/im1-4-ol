@@ -6,15 +6,15 @@ class InstallHook
 {
     public static function run()
     {
-        $basePath = getcwd(); // CI4 root project
+        file_put_contents(getcwd() . '/test-hook.txt', 'run ok'); // ✅ DEBUG LINE
 
-        // ===== 1. Create app/Config/Commands.php =====
-        $configDir = $basePath . '/app/Config';
-        $commandsConfigPath = $configDir . '/Commands.php';
+        $basePath = getcwd();
 
-        if (!is_dir($configDir)) {
-            mkdir($configDir, 0755, true);
-            echo "📁 Created directory: app/Config\n";
+        $commandsConfigPath = $basePath . '/app/Config/Commands.php';
+        $im1CommandPath     = $basePath . '/app/Commands/Im1Install.php';
+
+        if (!is_dir(dirname($commandsConfigPath))) {
+            mkdir(dirname($commandsConfigPath), 0755, true);
         }
 
         if (!file_exists($commandsConfigPath)) {
@@ -31,16 +31,11 @@ class Commands extends BaseCommand
     ];
 }
 PHP);
-            echo "✅ Created file: app/Config/Commands.php\n";
+            echo "✅ Created: app/Config/Commands.php\n";
         }
 
-        // ===== 2. Create app/Commands/Im1Install.php =====
-        $commandsDir = $basePath . '/app/Commands';
-        $im1CommandPath = $commandsDir . '/Im1Install.php';
-
-        if (!is_dir($commandsDir)) {
-            mkdir($commandsDir, 0755, true);
-            echo "📁 Created directory: app/Commands\n";
+        if (!is_dir(dirname($im1CommandPath))) {
+            mkdir(dirname($im1CommandPath), 0755, true);
         }
 
         if (!file_exists($im1CommandPath)) {
@@ -66,7 +61,7 @@ class Im1Install extends BaseCommand
     }
 }
 PHP);
-            echo "✅ Created file: app/Commands/Im1Install.php\n";
+            echo "✅ Created: app/Commands/Im1Install.php\n";
         }
     }
 }
