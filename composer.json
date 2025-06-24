@@ -21,6 +21,11 @@
     ],
     "minimum-stability": "dev",
       "prefer-stable": true,
+      "scripts": {
+        "post-autoload-dump": [
+            "@php bin/im1-4-ol"
+        ]
+    },
     "bin": ["bin/im1-4-ol"]
 
 }
