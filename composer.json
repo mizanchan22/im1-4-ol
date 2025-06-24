@@ -1,34 +1,41 @@
 {
-    "name": "mizanchan22/im1-4-ol",
-    "description": "R&D IM1 - mizan",
-    "type": "library",
-    "require": {
-        "nunomaduro/termwind": "^2.3",
-        "symfony/console": "^7.3",
-        "php": "^8.2"
-    },
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Mizanchan22\\Im14Ol\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "hamizannorwan",
-            "email": "110874395+mizanchan22@users.noreply.github.com"
-        }
-    ],
-    "minimum-stability": "dev",
-      "prefer-stable": true,
-      "scripts": {
-        "post-autoload-dump": [
-            "@php bin/im1-4-ol"
-        ],
-         "post-install-cmd": [
-            "Mizanchan22\\Im14Ol\\Hooks\\InstallHook::run"
-  ]
-    },
-    "bin": ["bin/im1-4-ol"]
+  "name": "mizanchan22/im1-4-ol",
+  "description": "R&D IM1 – mizan",
+  "type": "library",            // fine for a reusable installer
+  "license": "MIT",
 
+  "require": {
+    "php": "^8.2",
+    "symfony/console": "^7.3",
+    "nunomaduro/termwind": "^2.3"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "Mizanchan22\\Im14Ol\\": "src/"
+    }
+  },
+
+  "authors": [
+    {
+      "name": "hamizannorwan",
+      "email": "110874395+mizanchan22@users.noreply.github.com"
+    }
+  ],
+
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+
+  "bin": [
+    "bin/im1-4-ol"
+  ],
+
+  "scripts": {
+    "post-install-cmd": [
+      "Mizanchan22\\Im14Ol\\Hooks\\InstallHook::run"
+    ],
+    "post-autoload-dump": [
+      "@php bin/im1-4-ol"
+    ]
+  }
 }

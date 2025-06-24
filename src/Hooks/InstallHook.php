@@ -6,12 +6,17 @@ class InstallHook
 {
     public static function run()
     {
-        $basePath = getcwd();
+        $basePath = getcwd(); // CI4 root project
 
-        $commandsConfigPath = $basePath . '/app/Config/Commands.php';
-        $im1CommandPath     = $basePath . '/app/Commands/Im1Install.php';
+        // ===== 1. Create app/Config/Commands.php =====
+        $configDir = $basePath . '/app/Config';
+        $commandsConfigPath = $configDir . '/Commands.php';
 
-        // Create app/Config/Commands.php if it doesn't exist
+        if (!is_dir($configDir)) {
+            mkdir($configDir, 0755, true);
+            echo "📁 Created directory: app/Config\n";
+        }
+
         if (!file_exists($commandsConfigPath)) {
             file_put_contents($commandsConfigPath, <<<PHP
 <?php
@@ -22,27 +27,31 @@ use CodeIgniter\Config\BaseCommand;
 class Commands extends BaseCommand
 {
     public \$commands = [
-        'im1:install' => \App\Commands\Im1Install::class,
+        'im1:install' => \\App\\Commands\\Im1Install::class,
     ];
 }
 PHP);
-            echo "✅ Created: app/Config/Commands.php\n";
+            echo "✅ Created file: app/Config/Commands.php\n";
         }
 
-        // Create app/Commands/Im1Install.php if it doesn't exist
-        if (!file_exists($im1CommandPath)) {
-            if (!is_dir(dirname($im1CommandPath))) {
-                mkdir(dirname($im1CommandPath), 0755, true);
-            }
+        // ===== 2. Create app/Commands/Im1Install.php =====
+        $commandsDir = $basePath . '/app/Commands';
+        $im1CommandPath = $commandsDir . '/Im1Install.php';
 
+        if (!is_dir($commandsDir)) {
+            mkdir($commandsDir, 0755, true);
+            echo "📁 Created directory: app/Commands\n";
+        }
+
+        if (!file_exists($im1CommandPath)) {
             file_put_contents($im1CommandPath, <<<PHP
 <?php
 
-namespace App\Commands;
+namespace App\\Commands;
 
-use CodeIgniter\CLI\BaseCommand;
-use CodeIgniter\CLI\CLI;
-use Mizanchan22\Im14Ol\Installer;
+use CodeIgniter\\CLI\\BaseCommand;
+use CodeIgniter\\CLI\\CLI;
+use Mizanchan22\\Im14Ol\\Installer;
 
 class Im1Install extends BaseCommand
 {
@@ -57,7 +66,7 @@ class Im1Install extends BaseCommand
     }
 }
 PHP);
-            echo "✅ Created: app/Commands/Im1Install.php\n";
+            echo "✅ Created file: app/Commands/Im1Install.php\n";
         }
     }
 }
