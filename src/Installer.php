@@ -2,14 +2,6 @@
 
 namespace Mizanchan22\Im14Ol;
 
-foreach ($lines as &$line) {
-    if (str_starts_with(trim($line), 'CI_THEME=')) {
-        $line = "CI_THEME=$theme\n";
-        $updated = true;
-        break;
-    }
-}
-
 class Installer
 {
     public function run()
