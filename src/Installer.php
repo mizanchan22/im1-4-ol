@@ -143,7 +143,7 @@ closedir($dir);
 
 private function updateEnvTheme($theme)
 {
-$projectRoot = realpath(__DIR__ . '/../../../../../');
+$projectRoot = $this->getProjectRoot();
 $envPath = $projectRoot . '/.env';
 
 if (!file_exists($envPath)) {
@@ -171,6 +171,17 @@ file_put_contents($envPath, implode('', $lines));
 echo "🔧 CI_THEME updated in .env: $theme\n";
 }
 
+protected static function getProjectRoot(): string
+{
+$dir = __DIR__;
+while (!file_exists($dir . '/vendor') && dirname($dir) !== $dir) {
+$dir = dirname($dir);
+}
+if (basename($dir) === 'vendor') {
+return dirname($dir);
+}
+return $dir;
+}
 
 
 private function genCRUD()
