@@ -6,10 +6,8 @@ class InstallHook
 {
     public static function run()
     {
-        $basePath = dirname(__DIR__, 3); // Your CI4 project root
-        file_put_contents($basePath . '/install-hook-debug.log', 'HOOK EXECUTED at ' . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
-
-        $basePath = getcwd();
+        $basePath = self::getProjectRoot();
+        file_put_contents($basePath . '/install-hook-debug.log', "✅ Running from: $basePath\n", FILE_APPEND);
 
         $commandsConfigPath = $basePath . '/app/Config/Commands.php';
         $im1CommandPath     = $basePath . '/app/Commands/Im1Install.php';
@@ -64,5 +62,17 @@ class Im1Install extends BaseCommand
 PHP);
             echo "✅ Created: app/Commands/Im1Install.php\n";
         }
+    }
+
+    protected static function getProjectRoot(): string
+    {
+        $dir = __DIR__;
+        while (!file_exists($dir . '/vendor') && dirname($dir) !== $dir) {
+            $dir = dirname($dir);
+        }
+        if (basename($dir) === 'vendor') {
+            return dirname($dir);
+        }
+        return $dir;
     }
 }
